@@ -27,10 +27,11 @@ public struct SolidButtonStyle: ButtonStyle {
         }
         .frame(height: height)
         .frame(minWidth: height, maxWidth: isLoading ? height : .infinity)
-        .foregroundColor(isEnabled ? foreground : Color(UIColor.systemGray2))
-        .background(isEnabled ? background : Color(UIColor.systemGray5))
+        .foregroundColor(isEnabled ? foreground : .gray.opacity(0.75))
+        .background(isEnabled ? background : .gray.opacity(0.25))
         .overlay(configuration.isPressed ? .black.opacity(0.15) : Color.clear)
         .animation(.linear, value: isLoading)
+        .allowsHitTesting(!isLoading)
     }
     
     private func indicatorLoading() -> some View {
@@ -51,6 +52,7 @@ struct SolidButtonStyle_Previews: PreviewProvider {
             .buttonStyle(.solid(background: .red, foreground: .white))
             .isLoading(false)
             .cornerRadius(24)
+            .disabled(true)
             .padding()
     }
 }
