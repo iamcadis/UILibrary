@@ -1,11 +1,25 @@
+//
+//  RefreshableScrollViewTests.swift
+//
+//
+//  Created by Cadis on 15/02/23.
+//
+
+import UILibrary
+import SwiftUI
 import XCTest
-@testable import UILibrary
 
 final class UILibraryTests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-        XCTAssertEqual(UILibrary().text, "Hello, World!")
+    
+    func testRefreshableScrollView() {
+        let view = RefreshableScrollView(action: { }, content: { Text("Hello, world!") })
+        XCTAssertNotNil(view)
     }
+    
+    #if os(iOS)
+    func testUrlImageView() {
+        let view = UrlImageView(url: "https://www.logodesign.net/images/home-page-logo-03.png")
+        XCTAssertNotNil(view)
+    }
+    #endif
 }
