@@ -18,34 +18,32 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
     var onDismiss: (() -> Void)?
     var contentOne: (() -> PopupContent)? = nil
     var contentTwo: ((Item) -> PopupContent)? = nil
-    
-    @State private var itemIsNotNil = false
-    
+        
     func body(content: Content) -> some View {
         content
-            .onChange(of: isPresented) { _ in
-                UIView.setAnimationsEnabled(false)
-            }
-            .onChange(of: itemIsNotNil) { _ in
-                UIView.setAnimationsEnabled(false)
-            }
+            .onReceive(Just(item), perform: onReceiveItem)
+            .onChange(of: isPresented, perform: onChangeIsPresented)
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
                 contentWithoutValue()
             })
             .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
                 contentWithValue($0)
             })
-            .onReceive(Just(item), perform: onReceiveItem)
+    }
+    
+    private func onChangeIsPresented(_ value: Bool) {
+        UIView.setAnimationsEnabled(false)
     }
     
     private func onReceiveItem(_ value: Item?) {
-        itemIsNotNil = value != nil
+        UIView.setAnimationsEnabled(false)
     }
     
     private func contentWithoutValue() -> some View {
         ZStack {
             background()
                 .ignoresSafeArea()
+                .onTapGesture(perform: close)
             if let contentOne {
                 contentOne()
                     .background(colorScheme == .dark ? Color.black : Color.white)
@@ -53,7 +51,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .shadow(radius: 0.35)
             }
         }
-        .background(PopupBackgroundRemovalView(action: close))
+        .background(PopupBackgroundRemovalView())
         .onAppear(perform: enableAnimation)
         .onDisappear(perform: enableAnimation)
     }
@@ -62,6 +60,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
         ZStack {
             background()
                 .ignoresSafeArea()
+                .onTapGesture(perform: close)
             if let contentTwo {
                 contentTwo(value)
                     .background(colorScheme == .dark ? Color.black : Color.white)
@@ -69,7 +68,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .shadow(radius: 0.35)
             }
         }
-        .background(PopupBackgroundRemovalView(action: close))
+        .background(PopupBackgroundRemovalView())
         .onAppear(perform: enableAnimation)
         .onDisappear(perform: enableAnimation)
     }

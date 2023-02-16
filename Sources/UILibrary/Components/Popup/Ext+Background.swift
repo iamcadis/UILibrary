@@ -8,7 +8,6 @@
 import SwiftUI
 
 #if os(iOS)
-
 extension Int: Identifiable {
     public var id: Int { self }
 }
@@ -29,46 +28,25 @@ extension View {
 }
 
 struct PopupBackgroundRemovalView: UIViewRepresentable {
-    
-    var action: () -> Void
         
     func makeUIView(context: Context) -> UIView {
-        return BackgroundRemovalView(action: action)
+        return BackgroundRemovalView()
     }
     
     func updateUIView(_ uiView: UIView, context: Context) {}
     
     private class BackgroundRemovalView: UIView {
         
-        private let action: () -> Void
-        
-        init(action: @escaping () -> Void) {
-            self.action = action
-            super.init(frame: .zero)
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) not implemented")
-        }
-        
         override func didMoveToWindow() {
             super.didMoveToWindow()
-            let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-            
             superview?.superview?.backgroundColor = .clear
-            superview?.superview?.addGestureRecognizer(tap)
-        }
-        
-        @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-            let point = sender?.location(in: superview?.subviews.first)
-            if let point, !(self.frame.contains(point)) {
-                self.action()
-            }
         }
         
     }
     
 }
 #endif
+
+
 
 
