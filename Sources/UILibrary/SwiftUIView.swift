@@ -1,6 +1,6 @@
 //
 //  SwiftUIView.swift
-//  
+//
 //
 //  Created by Cadis on 16/02/23.
 //
@@ -9,23 +9,36 @@
 import SwiftUI
 import Combine
 
+extension String: Identifiable {
+    public typealias ID = Int
+    public var id: Int {
+        return hash
+    }
+}
+
 struct MyView: View {
     @Environment (\.dismiss) var dismiss
     
+    var text: String
+    
     var body: some View {
         VStack {
-            Text("Popup")
+            Text(text)
                 .onTapGesture(perform: dismiss)
         }
         .frame(width: 300, height: 300)
+        .preferredColorScheme(.dark)
     }
 }
 
 struct SwiftUIView: View {
     @State private var showPopup = false
-    @State private var showPopup2 = false
+    @State private var lapet: String? = nil
     
     init() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
         if #available(iOS 15.0, *) {
             let tabAppearance = UITabBarAppearance()
             tabAppearance.configureWithOpaqueBackground()
@@ -40,7 +53,14 @@ struct SwiftUIView: View {
                     showPopup.toggle()
                 })
                 .popup(isPresented: $showPopup) {
-                    MyView()
+                    MyView(text: "Popup 1")
+                }
+                
+                Button("Show Popup 2", action: {
+                    lapet = "ada data"
+                })
+                .popup(item: $lapet) {
+                    MyView(text: $0)
                 }
             }
             .navigationTitle("LAPET")
@@ -52,6 +72,10 @@ struct SwiftUIView: View {
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         SwiftUIView()
+            .preferredColorScheme(.dark)
     }
 }
 #endif
+
+
+
