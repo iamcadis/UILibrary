@@ -16,6 +16,13 @@ final class UILibraryTests: XCTestCase {
         XCTAssertNotNil(view)
     }
     
+    func testButtonStyle() {
+        XCTAssertNotNil(
+            Button("Test", action: {})
+                .buttonStyle(.outline)
+        )
+    }
+    
     #if os(iOS)
     func testUrlImageView() {
         let view = UrlImageView(url: "https://www.logodesign.net/images/home-page-logo-03.png")
