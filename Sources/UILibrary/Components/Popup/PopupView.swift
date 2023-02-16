@@ -49,6 +49,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .background(colorScheme == .dark ? Color.black : Color.white)
                     .cornerRadius(12)
                     .shadow(radius: 0.35)
+                    .padding(24)
             }
         }
         .background(PopupBackgroundRemovalView())
@@ -66,6 +67,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .background(colorScheme == .dark ? Color.black : Color.white)
                     .cornerRadius(12)
                     .shadow(radius: 0.35)
+                    .padding(24)
             }
         }
         .background(PopupBackgroundRemovalView())

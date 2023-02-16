@@ -26,8 +26,8 @@ struct MyView: View {
             Text(text)
                 .onTapGesture(perform: dismiss)
         }
-        .frame(width: 300, height: 300)
-        .preferredColorScheme(.dark)
+        .frame(height: 300)
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -35,30 +35,23 @@ struct SwiftUIView: View {
     @State private var showPopup = false
     @State private var lapet: String? = nil
     
-    init() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        if #available(iOS 15.0, *) {
-            let tabAppearance = UITabBarAppearance()
-            tabAppearance.configureWithOpaqueBackground()
-            UITabBar.appearance().scrollEdgeAppearance = tabAppearance
-        }
-    }
-    
     var body: some View {
         NavigationView {
-            VStack(spacing: 30) {
-                Button("Show Popup 1", action: {
+            VStack(spacing: 16) {
+                Button("Popup is presented", action: {
                     showPopup.toggle()
                 })
+                .buttonStyle(.solid)
+                .padding(.horizontal)
                 .popup(isPresented: $showPopup) {
-                    MyView(text: "Popup 1")
+                    MyView(text: "Popup is presented")
                 }
                 
-                Button("Show Popup 2", action: {
-                    lapet = "ada data"
+                Button("Popup selected item", action: {
+                    lapet = "Popup selected item"
                 })
+                .buttonStyle(.outline)
+                .padding(.horizontal)
                 .popup(item: $lapet) {
                     MyView(text: $0)
                 }
@@ -72,7 +65,6 @@ struct SwiftUIView: View {
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         SwiftUIView()
-            .preferredColorScheme(.dark)
     }
 }
 #endif
