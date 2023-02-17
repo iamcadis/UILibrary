@@ -5,7 +5,6 @@
 //  Created by Cadis on 15/02/23.
 //
 
-#if os(iOS)
 import SwiftUI
 
 private struct TapShape: Shape {
@@ -76,4 +75,3 @@ public struct UrlImageView: View {
         }
     }
 }
-#endif

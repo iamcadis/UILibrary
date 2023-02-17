@@ -13,3 +13,10 @@ extension Int: Identifiable {
     ///
     public var id: Int { self }
 }
+
+extension String: Identifiable {
+    
+    /// Use this modifier to conform String to Identifiable
+    ///
+    public var id: Int { hash }
+}

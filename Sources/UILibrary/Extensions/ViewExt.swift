@@ -24,7 +24,7 @@ public extension View {
     ///
     /// The default value is `false`.
     ///
-    func showLoading(_ show: Bool) -> some View {
+    func loading(_ show: Bool) -> some View {
         environment(\.isLoading, show)
     }
     
@@ -36,7 +36,7 @@ public extension View {
     ///   - onDismiss: The closure to execute when dismissing the modal view.
     ///   - content: A closure that returns the content of the modal view.
     ///
-    func popup<Content: View>(isPresented: Binding<Bool>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
+    @ViewBuilder func popup<Content: View>(isPresented: Binding<Bool>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
         modifier(
             PopupView<Int, Content>(isPresented: isPresented, item: .constant(nil), closeOnOutside: closeOnOutside, onDismiss: onDismiss, contentOne: content)
         )
@@ -54,9 +54,13 @@ public extension View {
     ///   - onDismiss: The closure to execute when dismissing the modal view.
     ///   - content: A closure returning the content of the modal view.
     ///   
-    func popup<Item: Identifiable, Content: View>(item: Binding<Item?>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
+    @ViewBuilder func popup<Item: Identifiable, Content: View>(item: Binding<Item?>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
         modifier(
             PopupView<Item, Content>(isPresented: .constant(false), item: item, closeOnOutside: closeOnOutside, onDismiss: onDismiss, contentTwo: content)
         )
+    }
+    
+    @ViewBuilder func showPageLoading(when isLoading: Binding<Bool>, text: String = "") -> some View {
+        modifier(LoadingModifier(isLoading: isLoading, text: text))
     }
 }

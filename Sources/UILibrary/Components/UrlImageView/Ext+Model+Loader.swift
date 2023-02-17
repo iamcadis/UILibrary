@@ -5,7 +5,6 @@
 //  Created by Cadis on 15/02/23.
 //
 
-#if os(iOS)
 import SwiftUI
 import Combine
 
@@ -67,17 +66,16 @@ public extension UrlImageView {
         return self
     }
 
-    /// Sets placeholder image
+    /// Sets placeholder image using asset name
     func placeholder(assetName: String) -> Self {
         imageModel.placeholder = assetName
         imageModel.error = assetName
         return self
     }
 
-    /// Sets error image
+    /// Sets error image using asset name
     func errorImage(assetName: String) -> Self {
         imageModel.error = assetName
         return self
     }
 }
-#endif

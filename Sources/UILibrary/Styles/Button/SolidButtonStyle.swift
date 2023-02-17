@@ -38,8 +38,8 @@ public struct SolidButtonStyle: ButtonStyle {
         .frame(minWidth: height, maxWidth: isLoading ? height : .infinity)
         .foregroundColor(isEnabled ? foreground : .gray.opacity(0.75))
         .background(isEnabled ? background : .gray.opacity(0.25))
-        .cornerRadius(radius)
         .overlay(configuration.isPressed ? .black.opacity(0.15) : Color.clear)
+        .cornerRadius(radius)
         .animation(.linear, value: isLoading)
         .allowsHitTesting(!isLoading)
     }

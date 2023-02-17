@@ -5,15 +5,11 @@
 //  Created by Cadis on 16/02/23.
 //
 
-#if os(iOS)
 import SwiftUI
 import Combine
 
-extension String: Identifiable {
-    public typealias ID = Int
-    public var id: Int {
-        return hash
-    }
+struct Test: Hashable {
+    let name: String
 }
 
 struct MyView: View {
@@ -35,33 +31,45 @@ struct MyView: View {
 
 struct SwiftUIView: View {
     @State private var showPopup = false
+    @State private var showLoading = false
     @State private var lapet: String? = nil
+    @State private var selection = Test(name: "Test")
+    
+    let items = [Test(name: "Test"), Test(name: "Test 2")]
     
     var body: some View {
-        RefreshableScrollView() {
+        Form {
             VStack(spacing: 16) {
-                Button("Popup is presented", action: {
+                Button("Popup use bool", action: {
                     showPopup.toggle()
                 })
                 .buttonStyle(.solid)
                 .padding(.horizontal)
-                .showLoading(showPopup)
+                .loading(showPopup)
                 .popup(isPresented: $showPopup) {
-                    MyView(text: "Popup is presented")
+                    MyView(text: "Popup use bool")
                 }
                 
-                Button("Popup selected item", action: {
-                    lapet = "Popup selected item"
+                Button("Popup use identifiable", action: {
+                    lapet = "Popup use identifiable"
                 })
                 .buttonStyle(.outline)
                 .padding(.horizontal)
                 .popup(item: $lapet) {
                     MyView(text: $0)
                 }
+                
+                Button("Show page loading", action: {
+                    showLoading.toggle()
+                })
+                .buttonStyle(.solid)
+                .padding(.horizontal)
             }
+            
         }
         .navigationTitle("Title")
         .navigationBarTitleDisplayMode(.inline)
+        .showPageLoading(when: $showLoading, text: "Loading")
     }
 }
 
@@ -72,10 +80,6 @@ struct SwiftUIView_Previews: PreviewProvider {
         }
     }
 }
-#endif
-
-
-
 
 
 

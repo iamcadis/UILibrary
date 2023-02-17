@@ -37,9 +37,13 @@ public struct RefreshableScrollView<Content: View>: View {
                         .alignmentGuide(.top, computeValue: { _ in
                             state == .loading ? -treshold : 0
                         })
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .opacity(state == .loading ? 1 : 0)
+                    if state == .loading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .progressViewStyle(.circular)
+                            .animation(.linear, value: state)
+                            .padding(.top, 8)
+                    }
                 }
                 .background(
                     GeometryReader { reader -> Color in
