@@ -60,6 +60,11 @@ public extension View {
         )
     }
     
+    /// Presents a indicator loading
+    /// - Parameters:
+    ///   - isLoading: A binding to a Boolean value that determines whether
+    ///   - text: A label for indicator loading
+    ///
     @ViewBuilder func showPageLoading(when isLoading: Binding<Bool>, text: String = "") -> some View {
         modifier(LoadingModifier(isLoading: isLoading, text: text))
     }
