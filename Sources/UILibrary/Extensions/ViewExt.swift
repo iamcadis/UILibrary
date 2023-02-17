@@ -38,7 +38,7 @@ public extension View {
     ///
     @ViewBuilder func popup<Content: View>(isPresented: Binding<Bool>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
         modifier(
-            PopupView<Int, Content>(isPresented: isPresented, item: .constant(nil), closeOnOutside: closeOnOutside, onDismiss: onDismiss, contentOne: content)
+            PopupView<String, Content>(isPresented: isPresented, item: .constant(nil), closeOnOutside: closeOnOutside, onDismiss: onDismiss, contentOne: content)
         )
     }
     
@@ -53,19 +53,19 @@ public extension View {
     ///     it with a new one using the same process.
     ///   - onDismiss: The closure to execute when dismissing the modal view.
     ///   - content: A closure returning the content of the modal view.
-    ///   
+    ///
     @ViewBuilder func popup<Item: Identifiable, Content: View>(item: Binding<Item?>, closeOnOutside: Bool = true, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping (Item) -> Content) -> some View {
         modifier(
             PopupView<Item, Content>(isPresented: .constant(false), item: item, closeOnOutside: closeOnOutside, onDismiss: onDismiss, contentTwo: content)
         )
     }
     
-    /// Presents a indicator loading
+    /// Presents a indicator loading full screen cover
     /// - Parameters:
     ///   - isLoading: A binding to a Boolean value that determines whether
     ///   - text: A label for indicator loading
     ///
-    @ViewBuilder func showPageLoading(when isLoading: Binding<Bool>, text: String = "") -> some View {
+    @ViewBuilder func pageLoading(when isLoading: Binding<Bool>, text: String = "") -> some View {
         modifier(LoadingModifier(isLoading: isLoading, text: text))
     }
 }

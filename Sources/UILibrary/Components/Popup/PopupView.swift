@@ -23,11 +23,43 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
             .onReceive(Just(item), perform: onReceiveItem)
             .onChange(of: isPresented, perform: onChangeIsPresented)
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
-                contentWithoutValue()
+                contentView(nil)
             })
-            .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
-                contentWithValue($0)
+            .fullScreenCover(item: $item, onDismiss: onDismiss, content: { item in
+                contentView(item)
             })
+    }
+    
+    private func contentView(_ item: Item?) -> some View {
+        ZStack {
+            background()
+                .ignoresSafeArea()
+                .onTapGesture(perform: close)
+            popupContent(item)
+                .background(colorScheme == .dark ? Color.black : Color.white)
+                .cornerRadius(12)
+                .shadow(radius: 0.35)
+                .padding(24)
+        }
+        .background(.clear)
+        .onAppear(perform: enableAnimation)
+        .onDisappear(perform: enableAnimation)
+    }
+    
+    private func popupContent(_ itemContent: Item?) -> some View {
+        if let contentOne {
+            return AnyView(contentOne())
+        }
+        
+        if let itemContent, let contentTwo {
+            return AnyView(contentTwo(itemContent))
+        }
+        
+        return AnyView(EmptyView())
+    }
+    
+    private func background() -> Color {
+        return colorScheme == .light ? Color.black.opacity(0.2) : Color.gray.opacity(0.2)
     }
     
     private func onChangeIsPresented(_ value: Bool) {
@@ -38,44 +70,10 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
         UIView.setAnimationsEnabled(false)
     }
     
-    private func contentWithoutValue() -> some View {
-        ZStack {
-            background()
-                .ignoresSafeArea()
-                .onTapGesture(perform: close)
-            if let contentOne {
-                contentOne()
-                    .background(colorScheme == .dark ? Color.black : Color.white)
-                    .cornerRadius(12)
-                    .shadow(radius: 0.35)
-                    .padding(24)
-            }
+    private func enableAnimation() {
+        if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
         }
-        .background(.clear)
-        .onAppear(perform: enableAnimation)
-        .onDisappear(perform: enableAnimation)
-    }
-    
-    private func contentWithValue(_ value: Item) -> some View {
-        ZStack {
-            background()
-                .ignoresSafeArea()
-                .onTapGesture(perform: close)
-            if let contentTwo {
-                contentTwo(value)
-                    .background(colorScheme == .dark ? Color.black : Color.white)
-                    .cornerRadius(12)
-                    .shadow(radius: 0.35)
-                    .padding(24)
-            }
-        }
-        .background(.clear)
-        .onAppear(perform: enableAnimation)
-        .onDisappear(perform: enableAnimation)
-    }
-    
-    private func background() -> Color {
-        return colorScheme == .light ? Color.black.opacity(0.15) : Color.gray.opacity(0.15)
     }
     
     private func close() {
@@ -84,12 +82,6 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                 isPresented = false
                 item = nil
             }
-        }
-    }
-    
-    private func enableAnimation() {
-        if !UIView.areAnimationsEnabled {
-            UIView.setAnimationsEnabled(true)
         }
     }
     

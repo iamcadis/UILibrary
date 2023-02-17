@@ -1,6 +1,6 @@
 //
 //  LoadingModifier.swift
-//  
+//
 //
 //  Created by Cadis on 17/02/23.
 //
@@ -12,30 +12,39 @@ public struct LoadingModifier: ViewModifier {
     
     @Binding var isLoading: Bool
     var text: String
-    
-    private var indicator: some View {
-        ProgressView(text)
-            .font(.footnote)
-            .scaleEffect(1.5)
-            .progressViewStyle(.circular)
-            .padding(.top, 8)
-    }
-    
-    private func background() -> Color {
-        return colorScheme == .light ? Color.black.opacity(0.15) : Color.gray.opacity(0.15)
-    }
         
     public func body(content: Content) -> some View {
         content
-            .overlay(
-                ZStack {
-                    if isLoading {
-                        Color.black.opacity(0.2).ignoresSafeArea()
-                        indicator.opacity(isLoading ? 1 : 0)
-                    }
-                }
-            )
-            .disabled(isLoading)
+            .onChange(of: isLoading, perform: onChangeLoadingState)
+            .fullScreenCover(isPresented: $isLoading, content: progressView)
+    }
+    
+    private func background() -> Color {
+        return colorScheme == .light ? Color.black.opacity(0.2) : Color.gray.opacity(0.2)
+    }
+    
+    private func progressView() -> some View {
+        ZStack {
+            background()
+                .ignoresSafeArea()
+            ProgressView(text)
+                .font(.footnote)
+                .scaleEffect(1.5)
+                .progressViewStyle(.circular)
+        }
+        .background(.clear)
+        .onAppear(perform: enableAnimation)
+        .onDisappear(perform: enableAnimation)
+    }
+    
+    private func onChangeLoadingState(_ value: Bool) {
+        UIView.setAnimationsEnabled(false)
+    }
+    
+    private func enableAnimation() {
+        if !UIView.areAnimationsEnabled {
+            UIView.setAnimationsEnabled(true)
+        }
     }
     
 }
