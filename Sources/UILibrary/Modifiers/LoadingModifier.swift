@@ -28,7 +28,7 @@ public struct LoadingModifier: ViewModifier {
             background()
                 .ignoresSafeArea()
             ProgressView(text)
-                .font(.footnote)
+                .font(.caption)
                 .scaleEffect(1.5)
                 .progressViewStyle(.circular)
         }

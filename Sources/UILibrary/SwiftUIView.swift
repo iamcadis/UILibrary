@@ -63,7 +63,7 @@ struct SwiftUIView: View {
                 })
                 .buttonStyle(.solid)
                 .padding(.horizontal)
-                .pageLoading(when: $showLoading, text: "Loading")
+                .pageLoading(when: $showLoading, text: "Sending")
             }
             
         }
