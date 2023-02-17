@@ -11,10 +11,17 @@ public struct SolidButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled: Bool
     @Environment(\.isLoading) private var isLoading: Bool
     
-    let background: Color
-    let foreground: Color
-    let height: CGFloat
-    let radius: CGFloat
+    private let background: Color
+    private let foreground: Color
+    private let height: CGFloat
+    private let radius: CGFloat
+    
+    public init(background: Color, foreground: Color, height: CGFloat, radius: CGFloat) {
+        self.background = background
+        self.foreground = foreground
+        self.height = height
+        self.radius = radius
+    }
     
     public func makeBody(configuration: Configuration) -> some View {
         ZStack(alignment: .center) {

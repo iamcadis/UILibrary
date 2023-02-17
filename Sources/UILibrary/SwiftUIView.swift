@@ -22,8 +22,10 @@ struct MyView: View {
     var text: String
     
     var body: some View {
-        VStack {
+        VStack(spacing: 16) {
+            UrlImageView(url: "https://www.logodesign.net/images/home-page-logo-03.png")
             Text(text)
+                .padding(.bottom)
                 .onTapGesture(perform: dismiss)
         }
         .frame(height: 300)
@@ -36,13 +38,14 @@ struct SwiftUIView: View {
     @State private var lapet: String? = nil
     
     var body: some View {
-        NavigationView {
+        RefreshableScrollView() {
             VStack(spacing: 16) {
                 Button("Popup is presented", action: {
                     showPopup.toggle()
                 })
                 .buttonStyle(.solid)
                 .padding(.horizontal)
+                .showLoading(showPopup)
                 .popup(isPresented: $showPopup) {
                     MyView(text: "Popup is presented")
                 }
@@ -56,18 +59,21 @@ struct SwiftUIView: View {
                     MyView(text: $0)
                 }
             }
-            .navigationTitle("LAPET")
-            .navigationBarTitleDisplayMode(.inline)
         }
+        .navigationTitle("Title")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-        SwiftUIView()
+        NavigationView {
+            SwiftUIView()
+        }
     }
 }
 #endif
+
 
 
 

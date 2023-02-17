@@ -19,6 +19,7 @@ public struct RefreshableScrollView<Content: View>: View {
     
     @State private var state: RefreshState = .waiting
     @State private var offset: CGFloat = .zero
+    @State private var startOffset: CGFloat = .zero
     
     public init(showsIndicators: Bool = false, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
         self.showsIndicators = showsIndicators
@@ -31,6 +32,7 @@ public struct RefreshableScrollView<Content: View>: View {
             ScrollView(.vertical, showsIndicators: showsIndicators) {
                 ZStack(alignment: .top) {
                     content
+                        .allowsHitTesting(state != .loading)
                         .animation(.linear, value: state)
                         .alignmentGuide(.top, computeValue: { _ in
                             state == .loading ? -treshold : 0
@@ -51,12 +53,17 @@ public struct RefreshableScrollView<Content: View>: View {
     }
     
     private func calculateComputeSize(reader: GeometryProxy) {
+        
+        if startOffset == 0 {
+            startOffset = reader.frame(in: .global).minY
+        }
+        
         offset = reader.frame(in: .global).minY
         
         // If the user pulled down below the threshold, prime the view
-        if offset > treshold && state == .waiting {
+        if offset - startOffset > treshold && state == .waiting {
             state = .primed
-        } else if offset < treshold && state == .primed {
+        } else if offset == startOffset && state == .primed {
             state = .loading
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 // once refreshing is done, smoothly move the loading view

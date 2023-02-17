@@ -5,7 +5,9 @@ import PackageDescription
 
 let package = Package(
     name: "UILibrary",
-    platforms: [.iOS(.v14), .macOS(.v11)],
+    platforms: [
+        .iOS(.v14)
+    ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
@@ -21,9 +23,7 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "UILibrary",
-            dependencies: []),
-        .testTarget(
-            name: "UILibraryTests",
-            dependencies: ["UILibrary"]),
+            path: "Sources"
+        )
     ]
 )

@@ -5,7 +5,6 @@
 //  Created by Cadis on 16/02/23.
 //
 
-#if os(iOS)
 import SwiftUI
 import Combine
 
@@ -52,7 +51,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .padding(24)
             }
         }
-        .background(PopupBackgroundRemovalView())
+        .background(.clear)
         .onAppear(perform: enableAnimation)
         .onDisappear(perform: enableAnimation)
     }
@@ -70,7 +69,7 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
                     .padding(24)
             }
         }
-        .background(PopupBackgroundRemovalView())
+        .background(.clear)
         .onAppear(perform: enableAnimation)
         .onDisappear(perform: enableAnimation)
     }
@@ -95,5 +94,3 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
     }
     
 }
-#endif
-
