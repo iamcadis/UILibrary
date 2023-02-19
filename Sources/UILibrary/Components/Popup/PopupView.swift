@@ -45,16 +45,17 @@ struct PopupView<Item: Identifiable, PopupContent: View>: ViewModifier {
         .onDisappear(perform: enableAnimation)
     }
     
+    @ViewBuilder
     private func popupContent(_ itemContent: Item?) -> some View {
         if let contentOne {
-            return AnyView(contentOne())
+            contentOne()
+        } else {
+            if let itemContent, let contentTwo {
+                contentTwo(itemContent)
+            } else {
+                EmptyView()
+            }
         }
-        
-        if let itemContent, let contentTwo {
-            return AnyView(contentTwo(itemContent))
-        }
-        
-        return AnyView(EmptyView())
     }
     
     private func background() -> Color {

@@ -21,10 +21,11 @@ public extension View where Self == NoBackground {
 public extension View {
     
     /// A Boolean value that determines whether the view hierarchy to show loading indicator
+    /// in button
     ///
     /// The default value is `false`.
     ///
-    func loading(_ show: Bool) -> some View {
+    func buttonLoading(_ show: Bool) -> some View {
         environment(\.isLoading, show)
     }
     

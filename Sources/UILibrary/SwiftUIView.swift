@@ -44,26 +44,23 @@ struct SwiftUIView: View {
         Form {
             VStack(spacing: 16) {
                 Button("Popup use bool", action: openPopupBoolean)
-                .buttonStyle(.solid)
-                .padding(.horizontal)
-                .loading(showPopup)
-                .popup(isPresented: $showPopup) {
-                    MyView(text: "Popup use bool")
-                }
+                    .buttonStyle(.solid)
+                    .buttonLoading(showPopup)
+                    .popup(isPresented: $showPopup) {
+                        MyView(text: "Popup use bool")
+                    }
                 
                 Button("Popup use identifiable", action: openPopupItem)
-                .buttonStyle(.outline)
-                .padding(.horizontal)
-                .popup(item: $itemPopup) {
-                    MyView(text: $0)
-                }
+                    .buttonStyle(.outline)
+                    .buttonLoading(showPopup)
+                    .popup(item: $itemPopup) {
+                        MyView(text: $0)
+                    }
                 
-                Button("Show page loading", action: {
-                    showLoading.toggle()
-                })
-                .buttonStyle(.solid)
-                .padding(.horizontal)
-                .pageLoading(when: $showLoading, text: "Sending")
+                Button("Show page loading", action: showPageLoading)
+                    .buttonStyle(.solid)
+                    .pageLoading(when: $showLoading, text: "Sending")
+                
             }
             
         }
@@ -79,13 +76,21 @@ struct SwiftUIView: View {
         self.itemPopup = "Popup use identifiable"
     }
     
+    private func showPageLoading() {
+        self.showLoading.toggle()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.showLoading.toggle()
+        }
+    }
+    
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SwiftUIView()
-                .preferredColorScheme(.dark)
+//                .preferredColorScheme(.dark)
         }
     }
 }
