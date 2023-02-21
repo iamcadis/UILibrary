@@ -38,6 +38,9 @@ struct SwiftUIView: View {
     // loading
     @State private var showLoading = false
     
+    // text
+    @State private var text = ""
+    
     let items = [Test(name: "Test"), Test(name: "Test 2")]
     
     var body: some View {
@@ -61,6 +64,11 @@ struct SwiftUIView: View {
                     .buttonStyle(.solid)
                     .pageLoading(when: $showLoading, text: "Sending")
                 
+                LabelTextField("Email", text: $text)
+                    .required(true)
+                    .placeholder("user@example.com")
+                    .setMaxLength(10)
+                    .setMaxLength(10)
             }
             
         }
@@ -94,8 +102,3 @@ struct SwiftUIView_Previews: PreviewProvider {
         }
     }
 }
-
-
-
-
-

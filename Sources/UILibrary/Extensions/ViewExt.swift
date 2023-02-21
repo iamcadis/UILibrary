@@ -21,7 +21,7 @@ public extension View where Self == NoBackground {
 public extension View {
     
     /// A Boolean value that determines whether the view hierarchy to show loading indicator
-    /// in button
+    /// in button (use this when you using button style `outline` or `solid`)
     ///
     /// The default value is `false`.
     ///
@@ -68,5 +68,69 @@ public extension View {
     ///
     @ViewBuilder func pageLoading(when isLoading: Binding<Bool>, text: String = "") -> some View {
         modifier(LoadingModifier(isLoading: isLoading, text: text))
+    }
+    
+    /// Hide view and the properties
+    ///
+    /// - Parameter gone: to hide element from view
+    ///
+    @ViewBuilder func gone(_ gone: Bool) -> some View {
+        if !gone { self }
+    }
+    
+    /// The ``capitalization`` struct defines the available
+    /// autocapitalizing behavior with backward compatibility for ios 14
+    ///
+    /// - Parameter type: One of the capitalizing behaviors
+    /// defined in the ``UITextAutocapitalizationType`` struct or nil.
+    @ViewBuilder func capitalization(_ type: UITextAutocapitalizationType) -> some View {
+        if #available(iOS 15.0, *) {
+            self.textInputAutocapitalization(TextInputAutocapitalization(type))
+        } else {
+            self.autocapitalization(type)
+        }
+    }
+}
+
+public extension LabelTextField {
+    
+    /// Set label text field to required
+    func required(_ required: Bool) -> Self {
+        notifier.isRequired = required
+        return self
+    }
+    
+    /// Set placeholder text field
+    func placeholder(_ placeholder: String) -> Self {
+        notifier.placeholder = placeholder
+        return self
+    }
+    
+    /// Set placeholder text field
+    func setMaxLength(_ length: Int) -> Self {
+        notifier.maxLength = length
+        return self
+    }
+    
+    /// Set placeholder text field
+    func labelIsHidden() -> Self {
+        notifier.isLabelHidden = true
+        return self
+    }
+    
+    /// Sets the validation condition.
+    func addValidation(_ condition: Bool, message: String) -> Self {
+        notifier.validators.append(.init(isValid: condition, message: message))
+        return self
+    }
+    
+    /// Override required message when condition fulfilled
+    /// use this when you using translation
+    ///
+    /// default message: \(`label`) cannot be blank or empty
+    ///
+    func overrideRequiredMessage(_ message: String) -> Self {
+        notifier.requiredMessage = message
+        return self
     }
 }
