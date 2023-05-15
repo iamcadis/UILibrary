@@ -97,6 +97,10 @@ struct SwiftUIView: View {
                             }
                         }
                     
+                    Button("Button disabled", action: openRefreshableView)
+                        .buttonStyle(.solid)
+                        .disabled(true)
+                    
                     Button("Show page loading", action: showPageLoading)
                         .buttonStyle(.outline)
                         .pageLoading(when: $showLoading, text: "Sending")

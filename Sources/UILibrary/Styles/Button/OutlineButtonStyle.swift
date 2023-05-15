@@ -30,6 +30,7 @@ public struct OutlineButtonStyle: ButtonStyle {
         .frame(minWidth: height, maxWidth: isLoading ? height : .infinity)
         .background(RoundedRectangle(cornerRadius: radius).stroke(color, lineWidth: 1.5))
         .overlay(configuration.isPressed ? color.opacity(0.15) : Color.clear)
+        .cornerRadius(radius)
         .animation(.linear, value: isLoading)
         .allowsHitTesting(!isLoading)
     }
