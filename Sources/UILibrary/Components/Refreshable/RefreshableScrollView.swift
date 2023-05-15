@@ -11,6 +11,7 @@ private enum RefreshState {
     case waiting, primed, loading
 }
 
+/// A scroll view with action on pull refresh.
 public struct RefreshableScrollView<Content: View>: View {
     private let showsIndicators: Bool
     private let content: Content
@@ -21,9 +22,9 @@ public struct RefreshableScrollView<Content: View>: View {
     @State private var offset: CGFloat = .zero
     @State private var startOffset: CGFloat = .zero
     
-    public init(showsIndicators: Bool = false, action: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+    public init(showsIndicators: Bool = false, onRefresh: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
         self.showsIndicators = showsIndicators
-        self.actionRefresh = action
+        self.actionRefresh = onRefresh
         self.content = content()
     }
     

@@ -9,6 +9,7 @@ import SwiftUI
 
 public extension ButtonStyle where Self == SolidButtonStyle {
     
+    /// Use this modifier to make button use solid color with default style
     static var solid: SolidButtonStyle {
         SolidButtonStyle(background: .accentColor, foreground: .white, height: 42, radius: 24)
     }
@@ -27,6 +28,7 @@ public extension ButtonStyle where Self == SolidButtonStyle {
 
 public extension ButtonStyle where Self == OutlineButtonStyle {
     
+    /// Use this modifier to make button use outline color with default style
     static var outline: OutlineButtonStyle {
         OutlineButtonStyle(color: .accentColor, height: 42, radius: 24)
     }

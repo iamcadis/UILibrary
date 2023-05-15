@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct Test: Hashable {
-    let name: String
+    var name: String
 }
 
 struct MyView: View {
@@ -32,10 +32,12 @@ struct MyView: View {
 struct ExampleRefreshableView: View {
     @Environment (\.dismiss) var dismiss
     
-    let items = [Test(name: "Test"), Test(name: "Test 2")]
+    @State var items = [Test(name: "Test"), Test(name: "Test 2")]
     
     var body: some View {
-        RefreshableScrollView {
+        RefreshableScrollView(onRefresh: {
+            items[0].name = "Refresed data \(Date())"
+        }) {
             VStack {
                 ForEach(items, id: \.self) { item in
                     Text(item.name)
@@ -97,8 +99,12 @@ struct SwiftUIView: View {
                             }
                         }
                     
-                    Button("Button disabled", action: openRefreshableView)
+                    Button("Button solid disabled", action: openRefreshableView)
                         .buttonStyle(.solid)
+                        .disabled(true)
+                    
+                    Button("Button outline disabled", action: openRefreshableView)
+                        .buttonStyle(.outline)
                         .disabled(true)
                     
                     Button("Show page loading", action: showPageLoading)
