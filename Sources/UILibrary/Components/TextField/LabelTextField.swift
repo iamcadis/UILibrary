@@ -46,7 +46,7 @@ public struct LabelTextField: View {
                 .opacity(0.6)
                 .gone(hideLabel)
             
-            TextField(placeholder, text: $text)
+            textField(placeholder, text: $text)
                 .onReceive(Just(text), perform: setMaxLength)
                 .onChange(of: text, perform: onTextChanged)
 
@@ -66,6 +66,17 @@ public struct LabelTextField: View {
         Text(notifier.isRequired ? "*" : "")
             .font(.caption)
             .foregroundColor(.red)
+    }
+    
+    @ViewBuilder
+    private func textField(_ placeholder: String, text: Binding<String>) -> some View {
+        if #available(iOS 15.0, *) {
+            TextField(placeholder, text: text)
+                .textInputAutocapitalization(TextInputAutocapitalization(notifier.capitalizationType))
+        } else {
+            TextField(placeholder, text: text)
+                .autocapitalization(notifier.capitalizationType)
+        }
     }
     
     private func setMaxLength(_ value: String) {
@@ -96,3 +107,57 @@ public struct LabelTextField: View {
     }
     
 }
+
+public extension LabelTextField {
+    
+    /// Set label text field to required
+    func required(_ required: Bool) -> Self {
+        notifier.isRequired = required
+        return self
+    }
+    
+    /// Set placeholder text field
+    func placeholder(_ placeholder: String) -> Self {
+        notifier.placeholder = placeholder
+        return self
+    }
+    
+    /// Set maximal lenght text field
+    func setMaxLength(_ length: Int) -> Self {
+        notifier.maxLength = length
+        return self
+    }
+    
+    /// Set label to hidden
+    func labelIsHidden() -> Self {
+        notifier.isLabelHidden = true
+        return self
+    }
+    
+    /// Add new validation condition to show error message.
+    func addValidation(_ condition: Bool, message: String) -> Self {
+        notifier.validators.append(.init(isValid: condition, message: message))
+        return self
+    }
+    
+    /// Override required message when condition fulfilled
+    /// use this when you using translation
+    ///
+    /// default message: \(`label`) cannot be blank or empty
+    ///
+    func requiredMessage(_ message: String) -> Self {
+        notifier.requiredMessage = message
+        return self
+    }
+    
+    /// The ``capitalization`` struct defines the available
+    /// autocapitalizing behavior with backward compatibility for ios 14
+    ///
+    /// - Parameter type: One of the capitalizing behaviors
+    /// default is using `none`
+    func capitalization(_ type: UITextAutocapitalizationType) -> Self {
+        notifier.capitalizationType = type
+        return self
+    }
+}
+

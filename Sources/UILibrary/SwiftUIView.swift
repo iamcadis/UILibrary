@@ -29,46 +29,91 @@ struct MyView: View {
     }
 }
 
+struct ExampleRefreshableView: View {
+    @Environment (\.dismiss) var dismiss
+    
+    let items = [Test(name: "Test"), Test(name: "Test 2")]
+    
+    var body: some View {
+        RefreshableScrollView {
+            VStack {
+                ForEach(items, id: \.self) { item in
+                    Text(item.name)
+                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+                }
+            }
+            .padding()
+            .frame(minWidth: 0, maxWidth: .infinity, alignment: .topLeading)
+        }
+        .navigationTitle("Testing")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: dismiss) {
+                    Label("Back", systemImage: "chevron.left")
+                }
+            }
+        }
+    }
+}
+
 struct SwiftUIView: View {
     
     // popup
     @State private var showPopup = false
+    @State private var showRefreshableview = false
     @State private var itemPopup: String? = nil
     
     // loading
     @State private var showLoading = false
     
     // text
-    @State private var text = ""
-    
-    let items = [Test(name: "Test"), Test(name: "Test 2")]
+    @State private var name: String? = ""
+    @State private var email = ""
     
     var body: some View {
         Form {
-            VStack(spacing: 16) {
-                Button("Popup use bool", action: openPopupBoolean)
-                    .buttonStyle(.solid)
-                    .buttonLoading(showPopup)
-                    .popup(isPresented: $showPopup) {
-                        MyView(text: "Popup use bool")
-                    }
+            Section(header: Text("Button")) {
+                VStack(spacing: 16) {
+                    Button("Popup use bool", action: openPopupBoolean)
+                        .buttonStyle(.solid)
+                        .buttonLoading(showPopup)
+                        .popup(isPresented: $showPopup) {
+                            MyView(text: "Popup use bool")
+                        }
+                    
+                    Button("Popup use identifiable", action: openPopupItem)
+                        .buttonStyle(.outline)
+                        .buttonLoading(showPopup)
+                        .popup(item: $itemPopup) {
+                            MyView(text: $0)
+                        }
+                    
+                    Button("Show Refreshableview", action: openRefreshableView)
+                        .buttonStyle(.solid)
+                        .fullScreenCover(isPresented: $showRefreshableview) {
+                            NavigationView {
+                                ExampleRefreshableView()
+                            }
+                        }
+                    
+                    Button("Show page loading", action: showPageLoading)
+                        .buttonStyle(.outline)
+                        .pageLoading(when: $showLoading, text: "Sending")
+                }
+            }
+            
+            Section(header: Text("Text Field")) {
+                LabelTextField("Nama", text: $name.wrapToRequired)
+                    .placeholder("John Doe")
+                    .setMaxLength(40)
+                    .capitalization(.words)
                 
-                Button("Popup use identifiable", action: openPopupItem)
-                    .buttonStyle(.outline)
-                    .buttonLoading(showPopup)
-                    .popup(item: $itemPopup) {
-                        MyView(text: $0)
-                    }
-                
-                Button("Show page loading", action: showPageLoading)
-                    .buttonStyle(.solid)
-                    .pageLoading(when: $showLoading, text: "Sending")
-                
-                LabelTextField("Email", text: $text)
+                LabelTextField("Email", text: $email)
                     .required(true)
                     .placeholder("user@example.com")
-                    .setMaxLength(10)
-                    .setMaxLength(10)
+                    .setMaxLength(40)
+                    .requiredMessage("Testing ganti required message")
             }
             
         }
@@ -82,6 +127,10 @@ struct SwiftUIView: View {
     
     private func openPopupItem() {
         self.itemPopup = "Popup use identifiable"
+    }
+    
+    private func openRefreshableView() {
+        self.showRefreshableview.toggle()
     }
     
     private func showPageLoading() {
@@ -98,7 +147,8 @@ struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SwiftUIView()
-//                .preferredColorScheme(.dark)
+            //                .preferredColorScheme(.dark)
         }
     }
 }
+

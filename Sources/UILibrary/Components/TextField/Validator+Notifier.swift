@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Validator {
     let isValid: Bool
@@ -21,4 +22,5 @@ class LabelTextFieldNotifier: ObservableObject {
     @Published var placeholder = ""
     @Published var validators = [Validator]()
     @Published var requiredMessage = ""
+    @Published var capitalizationType: UITextAutocapitalizationType = .none
 }

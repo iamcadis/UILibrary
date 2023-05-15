@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private struct TapShape: Shape {
+private struct ClickShape: Shape {
     var height: CGFloat
     
     func path(in rect: CGRect) -> Path {
@@ -33,24 +33,32 @@ public struct UrlImageView: View {
     public var body: some View {
         GeometryReader { geo in
             ZStack {
-                if let uiImage = imageLoader.image, !imageLoader.isLoading {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .aspectRatio(contentMode: imageModel.aspecRatio)
-                        .frame(maxWidth: geo.size.width, maxHeight: geo.size.height)
-                        .clipped()
-                        .contentShape(TapShape(height: geo.size.height))
+                if let defaultImage = imageModel.defaultImage {
+                    imageView(uiImage: defaultImage, size: geo.size)
                 } else {
-                    Color.primary.opacity(0.05)
-                    if let error = imageModel.error, !imageLoader.isLoading {
-                        imageView(name: error, size: geo.size)
-                    } else {
+                    if imageLoader.isLoading {
                         if let placeholder = imageModel.placeholder {
                             imageView(name: placeholder, size: geo.size)
                         } else {
-                            Text(imageLoader.isLoading ? "Loading..." : "No Image")
+                            Text("Loading...")
+                        }
+                    } else {
+                        if let resultImage = imageLoader.image {
+                            imageView(uiImage: resultImage, size: geo.size)
+                        } else {
+                            if let error = imageModel.error {
+                                imageView(name: error, size: geo.size)
+                            } else {
+                                Text("No Image")
+                            }
                         }
                     }
+                }
+                
+                if imageLoader.isVideo {
+                    Image(systemName: "play.circle")
+                        .font(.system(size: 28))
+                        .foregroundColor(Color(UIColor.systemBackground))
                 }
             }
             .frame(width: geo.size.width, height: geo.size.height)
@@ -64,7 +72,16 @@ public struct UrlImageView: View {
             .aspectRatio(contentMode: .fit)
             .frame(maxWidth: size.width, maxHeight: size.height)
             .padding(size.height / 10)
-            .contentShape(TapShape(height: size.height))
+            .contentShape(ClickShape(height: size.height))
+    }
+    
+    private func imageView(uiImage: UIImage, size: CGSize) -> some View {
+        Image(uiImage: uiImage)
+            .resizable()
+            .aspectRatio(contentMode: imageModel.aspecRatio)
+            .frame(maxWidth: size.width, maxHeight: size.height)
+            .clipped()
+            .contentShape(ClickShape(height: size.height))
     }
     
     private func loadImage(_ url: URL?) {
@@ -73,5 +90,33 @@ public struct UrlImageView: View {
         if imageLoader.image == nil, !imageLoader.isLoading {
             self.imageLoader.load(url)
         }
+    }
+}
+
+public extension UrlImageView {
+    
+    /// Set aspect ratio image
+    func modeRatio(_ mode: ContentMode) -> Self {
+        imageModel.aspecRatio = mode
+        return self
+    }
+    
+    /// Set placeholder image using asset name
+    func placeholder(assetName: String) -> Self {
+        imageModel.placeholder = assetName
+        imageModel.error = assetName
+        return self
+    }
+    
+    /// Set error image using asset name
+    func errorImage(assetName: String) -> Self {
+        imageModel.error = assetName
+        return self
+    }
+    
+    /// Set image using UIImage
+    func defaultImage(image: UIImage?) -> Self {
+        imageModel.defaultImage = image
+        return self
     }
 }
