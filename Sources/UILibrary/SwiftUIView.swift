@@ -70,8 +70,8 @@ struct SwiftUIView: View {
     @State private var showLoading = false
     
     // text
-    @State private var name: String? = ""
-    @State private var email = ""
+    @State private var name = ""
+    @State private var email: String? = nil
     
     var body: some View {
         Form {
@@ -114,16 +114,17 @@ struct SwiftUIView: View {
             }
             
             Section(header: Text("Text Field")) {
-                LabelTextField("Nama", text: $name.wrapToRequired)
+                LabelTextField("Name", text: $name)
                     .placeholder("John Doe")
                     .setMaxLength(40)
                     .capitalization(.words)
                 
-                LabelTextField("Email", text: $email)
+                LabelTextField("Email", text: $email.ifNil(replaceWith: ""))
                     .required(true)
                     .placeholder("user@example.com")
                     .setMaxLength(40)
-                    .requiredMessage("Testing ganti required message")
+                    .addValidation(email.isNilOrBlank, message: "Email cannot be blank or empty")
+                    .addValidation(email.ifNil(replaceWith: "").count < 10, message: "Email must more than 10 characters")
             }
             
         }

@@ -50,7 +50,7 @@ public struct LabelTextField: View {
                 .onReceive(Just(text), perform: setMaxLength)
                 .onChange(of: text, perform: onTextChanged)
 
-            if validator.isValid == false {
+            if validator.condition {
                 Text(validator.message)
                     .font(.caption2)
                     .foregroundColor(Color.red)
@@ -94,16 +94,12 @@ public struct LabelTextField: View {
     
     private var validator: Validator {
         if hasChanged {
-            if notifier.isRequired && text.isBlank {
-                return .init(isValid: false, message: notifier.requiredMessage.isEmpty ? "\(label.lowercased().capitalized) cannot be blank or empty" : notifier.requiredMessage)
-            }
-            
-            if let firstError = notifier.validators.filter({ $0.isValid == false }).first {
+            if let firstError = notifier.validators.filter({ $0.condition }).first {
                 return firstError
             }
         }
         
-        return .init(isValid: true, message: "")
+        return .init(condition: false, message: "")
     }
     
 }
@@ -134,19 +130,13 @@ public extension LabelTextField {
         return self
     }
     
-    /// Add new validation condition to show error message.
+    /// Add condition to show error message below textfield
+    ///
+    /// - Parameters:
+    ///   - condition: A condition to trigger error message
+    ///   - message: Error message when `condition` fulfilled
     func addValidation(_ condition: Bool, message: String) -> Self {
-        notifier.validators.append(.init(isValid: condition, message: message))
-        return self
-    }
-    
-    /// Override required message when condition fulfilled
-    /// use this when you using translation
-    ///
-    /// default message: \(`label`) cannot be blank or empty
-    ///
-    func requiredMessage(_ message: String) -> Self {
-        notifier.requiredMessage = message
+        notifier.validators.append(.init(condition: condition, message: message))
         return self
     }
     

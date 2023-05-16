@@ -5,7 +5,7 @@
 //  Created by Cadis on 17/02/23.
 //
 
-import Foundation
+import SwiftUI
 
 extension String: Identifiable {
     
@@ -17,17 +17,6 @@ extension String: Identifiable {
 }
 
 extension Optional where Wrapped == String {
-    
-    var _bound: String? {
-        get { return self }
-        set { self = newValue }
-    }
-    
-    /// Use this modifier to make binding string optional
-    public var wrapToRequired: String {
-        get { return _bound ?? "" }
-        set { _bound = newValue.isEmpty ? nil : newValue }
-    }
     
     /// Use this modifier to check string is nil or blank
     public var isNilOrBlank: Bool {
@@ -41,3 +30,22 @@ extension Optional where Wrapped == String {
     
 }
 
+extension Optional {
+    public func ifNil(replaceWith defaultValue: @autoclosure () throws -> Wrapped) rethrows -> Wrapped {
+        switch self {
+        case .some(let value):
+            return value
+        case .none:
+            return try defaultValue()
+        }
+    }
+}
+
+public extension Binding {
+    func ifNil<T>(replaceWith defaultValue: T) -> Binding<T> where Value == Optional<T>  {
+        Binding<T>(
+            get: { self.wrappedValue ?? defaultValue },
+            set: { self.wrappedValue = $0 }
+        )
+    }
+}
