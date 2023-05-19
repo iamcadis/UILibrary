@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-struct NumericTextField<Value>: View {
+public struct NumericTextField<Value>: View {
     @ObservedObject var props = FieldProperties()
     
     private let label: String
@@ -102,7 +102,6 @@ struct NumericTextField_Previews: PreviewProvider {
         NumericTextField("Quantity", value: .constant(1000.4))
     }
 }
-
 
 
 public extension String {
