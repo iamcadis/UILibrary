@@ -72,6 +72,7 @@ struct SwiftUIView: View {
     // text
     @State private var name = ""
     @State private var email: String? = nil
+    @State private var number: Double? = nil
     
     var body: some View {
         Form {
@@ -125,6 +126,11 @@ struct SwiftUIView: View {
                     .setMaxLength(40)
                     .addValidation(email.isNilOrBlank, message: "Email cannot be blank or empty")
                     .addValidation(email.ifNil(replaceWith: "").count < 10, message: "Email must more than 10 characters")
+                
+                NumericTextField("Quantity", value: $number)
+                
+                Text("VALUE: \(number ?? 0.0)")
+                
             }
             
         }
@@ -158,8 +164,9 @@ struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             SwiftUIView()
-            //                .preferredColorScheme(.dark)
         }
     }
 }
+
+
 

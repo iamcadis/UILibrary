@@ -71,11 +71,17 @@ public extension View {
     }
     
     /// Hide view and the properties
-    ///
-    /// - Parameter gone: to hide element from view
-    ///
-    @ViewBuilder func gone(_ gone: Bool) -> some View {
+    @ViewBuilder func gone(if gone: Bool) -> some View {
         if !gone { self }
+    }
+    
+    /// Hide view and the properties still exist
+    @ViewBuilder func hidden(if hide: Bool) -> some View {
+        if hide {
+            self
+        } else {
+            self.hidden()
+        }
     }
     
 }

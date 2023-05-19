@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 public struct LabelTextField: View {
-    @ObservedObject var notifier = LabelTextFieldNotifier()
+    @ObservedObject var props = FieldProperties()
     
     private let label: String
     @Binding var text: String
@@ -21,15 +21,15 @@ public struct LabelTextField: View {
     }
     
     private var placeholder: String {
-        if notifier.placeholder.isEmpty {
-            return "\(label)\(notifier.isRequired ? "*" : "")"
+        if props.placeholder.isEmpty {
+            return "\(label)\(props.isRequired ? "*" : "")"
         } else {
-            return notifier.placeholder
+            return props.placeholder
         }
     }
     
     private var hideLabel: Bool {
-        if notifier.isLabelHidden {
+        if props.isLabelHidden {
             return true
         }
         
@@ -37,14 +37,14 @@ public struct LabelTextField: View {
             return false
         }
         
-        return notifier.placeholder.isEmpty
+        return props.placeholder.isEmpty
     }
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 1) {
             labelText()
                 .opacity(0.6)
-                .gone(hideLabel)
+                .gone(if: hideLabel)
             
             textField(placeholder, text: $text)
                 .onReceive(Just(text), perform: setMaxLength)
@@ -63,7 +63,7 @@ public struct LabelTextField: View {
     private func labelText() -> some View {
         Text(label)
             .font(.caption) +
-        Text(notifier.isRequired ? "*" : "")
+        Text(props.isRequired ? "*" : "")
             .font(.caption)
             .foregroundColor(.red)
     }
@@ -72,18 +72,18 @@ public struct LabelTextField: View {
     private func textField(_ placeholder: String, text: Binding<String>) -> some View {
         if #available(iOS 15.0, *) {
             TextField(placeholder, text: text)
-                .textInputAutocapitalization(TextInputAutocapitalization(notifier.capitalizationType))
+                .textInputAutocapitalization(TextInputAutocapitalization(props.capitalizationType))
         } else {
             TextField(placeholder, text: text)
-                .autocapitalization(notifier.capitalizationType)
+                .autocapitalization(props.capitalizationType)
         }
     }
     
     private func setMaxLength(_ value: String) {
-        if notifier.maxLength == 0 { return }
+        if props.maxLength == 0 { return }
         
-        if value.count > notifier.maxLength  {
-            self.text = String(value.prefix(notifier.maxLength))
+        if value.count > props.maxLength  {
+            self.text = String(value.prefix(props.maxLength))
             return
         }
     }
@@ -92,9 +92,9 @@ public struct LabelTextField: View {
         self.hasChanged = true
     }
     
-    private var validator: Validator {
+    private var validator: FieldValidator {
         if hasChanged {
-            if let firstError = notifier.validators.filter({ $0.condition }).first {
+            if let firstError = props.validators.filter({ $0.condition }).first {
                 return firstError
             }
         }
@@ -108,25 +108,25 @@ public extension LabelTextField {
     
     /// Set label text field to required
     func required(_ required: Bool) -> Self {
-        notifier.isRequired = required
+        props.isRequired = required
         return self
     }
     
     /// Set placeholder text field
     func placeholder(_ placeholder: String) -> Self {
-        notifier.placeholder = placeholder
+        props.placeholder = placeholder
         return self
     }
     
     /// Set maximal lenght text field
     func setMaxLength(_ length: Int) -> Self {
-        notifier.maxLength = length
+        props.maxLength = length
         return self
     }
     
     /// Set label to hidden
     func labelIsHidden() -> Self {
-        notifier.isLabelHidden = true
+        props.isLabelHidden = true
         return self
     }
     
@@ -136,7 +136,7 @@ public extension LabelTextField {
     ///   - condition: A condition to trigger error message
     ///   - message: Error message when `condition` fulfilled
     func addValidation(_ condition: Bool, message: String) -> Self {
-        notifier.validators.append(.init(condition: condition, message: message))
+        props.validators.append(.init(condition: condition, message: message))
         return self
     }
     
@@ -146,7 +146,7 @@ public extension LabelTextField {
     /// - Parameter type: One of the capitalizing behaviors
     /// default is using `none`
     func capitalization(_ type: UITextAutocapitalizationType) -> Self {
-        notifier.capitalizationType = type
+        props.capitalizationType = type
         return self
     }
 }
